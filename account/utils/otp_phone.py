@@ -13,16 +13,23 @@ class OTP:
 
         if self.__data is not None:
             # forma ma'lumotlari
-            cache.set(self.__session_user_key, self.__data, 60 * 10, version=1)
+            cache.set(self.__session_user_key, self.__data, 60*10, version=1)
 
             # cache codi verifikatsiya ma'lumotlari'
             cache.set(self.__session_user_key, {
                 'code': randint(10000, 99999),
                 'time': str(datetime.now()),
-            }, 60 * 10, version=2)
+            }, 60*10, version=2)
+
 
             # sanoq
-            cache.set(self.__session_user_key, 1, 60 * 10, version=3)
+
+            cache.set(self.__session_user_key, 1, 60*10, version=3)
+           # cache.set(self.__session_user_key, 1, 60 * 10, version=3)
+           # version1 = cache.get(self.__session_user_key,version=1)
+           # version2 = cache.get(self.__session_user_key,version=2)
+           # version3 = cache.get(self.__session_user_key,version=3)
+           # print(version1, version2, version3)
         try:
             self.__form = cache.get(self.__session_user_key, version=1)
             self.__code = cache.get(self.__session_user_key, version=2)

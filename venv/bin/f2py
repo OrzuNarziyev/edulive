@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/media/mvzona/Новый том/django/projects/edulive/venv/bin/python3" "$0" "$@"
-' '''
+#!/home/ubuntu/myproject/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

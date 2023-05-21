@@ -15,18 +15,21 @@ Including another URLconf
 """
 import random
 import time
+from django.views.static import serve
 
 from django.contrib import admin
 from django.shortcuts import redirect
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from django.conf import settings
 from django.conf.urls.static import static
 from account.models import CustomUser, Students
-
+from get_sms import Getsms
 from faker import Faker
 from account.forms import RegisterUserForm
-
+from django.http import HttpResponse
+from get_sms import Getsms
+from django.http import HttpResponse
 #
 # def create_user(request):
 #     students = CustomUser.objects.all()[:100]
@@ -57,20 +60,37 @@ from account.forms import RegisterUserForm
 #             print('save')
 
 # return redirect('course:homepage')
-
-
+def send_s(request):
+    login = 'Stable'
+    password = '51v4N0y4R3N5rbcy122c'
+    message = Getsms(login=login, password=password)
+    phone = ['998997047646']
+    result = message.send_message(phone_numbers=phone, text=f"sizning verifikatsiya kodingiz {123456}")
+    return HttpResponse(result)
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('mvzona/', admin.site.urls),
     path('accounts/', include('account.urls')),
     path('news/', include('news.urls')),
     path('quiz/', include('quiz.urls')),
+    path('create/', send_s),
     path('', include('courses.urls')),
 
-    path('__debug__/', include('debug_toolbar.urls')),
-    # path('create/', create_user, name='create')
+    #path('__debug__/', include('debug_toolbar.urls')),
+   #path('create/', sms_send, name='create')
 ]
 
-urlpatterns += static(settings.MEDIA_URL,
-                      document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL,
-                      document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,}),]
+
+if settings.DEBUG:
+    urlpatterns += path('__debug__/', include('debug_toolbar.urls')),
+    urlpatterns += static(settings.MEDIA_URL,
+                        document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                        document_root=settings.STATIC_ROOT)
+
+#urlpatterns += static(settings.MEDIA_URL,
+#                      document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.STATIC_URL,
+#                      document_root=settings.STATIC_ROOT)
+#

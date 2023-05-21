@@ -1,4 +1,4 @@
-#!/media/mvzona/Новый том/django/projects/edulive/venv/bin/python3
+#!/home/ubuntu/myproject/venv/bin/python3
 
 # http://www.python.org/doc/2.4.4/lib/module-itertools.html
 import itertools

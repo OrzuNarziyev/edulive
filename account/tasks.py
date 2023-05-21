@@ -4,7 +4,7 @@ from django.core.cache import cache
 from random import randint
 
 from datetime import datetime
-
+from get_sms import Getsms
 
 # asinxron sms yuborish
 
@@ -30,22 +30,23 @@ def verify(key):
 
 @shared_task
 def send_sms(phone, text):
-    # Oper sms uchun
-    # message = Opersms.Getsms(login='stabler',password='ozrS0dHnIVcw')
-    # phone_number = phone
-    # results = message.send_message(phone,text=text)
-    # end opersmscle
-    pass
+    # GetSMS
+    login = 'Stable'
+    password= '51v4N0y4R3N5rbcy122c'
+    message = Getsms(login=login, password=password)
+    phone_number = phone
+    results = message.send_message(phone_number, text=text)
 
 
-@shared_task
-def send_email(email, code):
-    mail_send = send_mail(subject='subject', message=str(code), from_email='narziyev@gmail.com',
-                          recipient_list=[email])
+
+#@shared_task
+#def send_email(email, code):
+#    mail_send = send_mail(subject='subject', message=str(code), from_email='narziyev@gmail.com',
+#                          recipient_list=[email])
     # mail_send = send_mail(
     #     'subject',
     #     code,
     #     email
     # )
-    return mail_send
+#    return mail_send
     # res = send_mail(code, code_user, settings.EMAIL_HOST_USER, [email])

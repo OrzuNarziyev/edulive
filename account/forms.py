@@ -85,7 +85,10 @@ class RegisterUserForm(UserCreationForm):
         instance = super().save(commit=False)
         cd = self.cleaned_data
         full_name = tuple(str(cd['full_name']).split(' '))
-        (last_name, first_name, fathers_name) = full_name
+        last_name = full_name[0]
+        first_name = full_name[1]
+        fathers_name = ' '.join(full_name[2:])
+        #(last_name, first_name, fathers_name) = full_name
         instance.last_name = last_name
         instance.first_name = first_name
         instance.father_name = fathers_name

@@ -57,7 +57,9 @@ class CustomUser(AbstractUser):
 
     def get_full_name(self):
         return f"{self.last_name} {self.first_name}  {self.father_name}"
-
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 class Students(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.PROTECT, related_name='students',

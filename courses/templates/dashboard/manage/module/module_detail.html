@@ -1,4 +1,4 @@
-<div hx-target="beforebegin" class="mx-3 my-3 py-3 px-3 bg-white shadow border border-gray-100">
+<div hx-target="this" class="mx-3 my-3 py-3 px-3 bg-white shadow border border-gray-100">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
         Mavzu:{{ modul.order|add:1 }} {{ modul.title }}
     </h3>
@@ -8,7 +8,7 @@
 
     <div class="d-flex justify-content-evenly mt-3">
 
-        <button hx-get="{% url 'course:manage:update-modul' modul.id %}" hx-swap="outerHTML"
+        <button  hx-get="{% url 'course:manage:update-modul' modul.id %}" hx-swap="outerHTML"
                 title="tahrirlash"
                 class="btn btn-outline-warning"><span class="fas fa-edit fs-5"></span>
             update

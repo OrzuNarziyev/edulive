@@ -26,30 +26,38 @@ from django.http import JsonResponse, HttpResponseRedirect
 from datetime import datetime
 from django.core.cache import cache
 from datetime import datetime
-from account.tasks import send_email, send_sms
+from account.tasks import send_sms
 from django.core.mail import send_mail
 
 from django.utils.translation import gettext_lazy as _
 
 from django.conf import settings
-
+from get_sms import Getsms
 UserModel = get_user_model()
 
-
-# register view
 def register(request):
     if request.user.is_authenticated:
         return redirect('course:homepage')
     form = RegisterUserForm()
     if request.method.lower() == 'get':
         request.session['date'] = str(datetime.now())
-
+        cache_key = f"user_{request.session.session_key}"
+        cache_form = cache.get(cache_key, version=1)
+        cache_code = cache.get(cache_key, version=2)
+        cache_count = cache.get(cache_key, version=3)
+        print(cache_code)
     if request.method.lower() == 'post':
         cache_key = f"user_{request.session.session_key}"
-        cache.delete(cache_key, version=1)
-        cache.delete(cache_key, version=2)
-        cache.delete(cache_key, version=3)
+	
 
+#print(cache.get(cache_key, version=1), cache.get(cache_key, version=2)
+        try:
+            cache.delete(cache_key, version=1)
+            cache.delete(cache_key, version=2)
+            cache.delete(cache_key, version=3)
+        except:
+            pass
+	#print(cache.get(cache_key, version=1)
         form = RegisterUserForm(request.POST)
         print(form.is_valid())
         if form.is_valid():
@@ -62,9 +70,19 @@ def register(request):
                 'password1': form.cleaned_data['password1'],
                 'password2': form.cleaned_data['password2']
             }
-            email = form.cleaned_data['email']
             otp = OTP(cache_key, data)
-            send_email.delay(email, str(otp))
+            print(otp,'===============================================================================')
+            phone = form.cleaned_data['phone_number']
+            login = 'Stable'
+            password = '51v4N0y4R3N5rbcy122c'
+            message = Getsms(login=login, password=password)
+            result = message.send_message(
+                phone_numbers=[phone],
+                text=f"sizning verifikatsiya kodingiz {otp.get_otp}"
+                    )
+            print(result)	   
+ #print(result)
+            # send_sms.delay(phone, str(otp))
             return redirect('account:verify')
         else:
             return render(request, 'account/registration/signup.html', {'forms': form})
@@ -73,7 +91,6 @@ def register(request):
         'forms': form
     }
     return render(request, 'account/registration/signup.html', context=context)
-
 
 # verify view
 def verify(request):
@@ -94,12 +111,11 @@ def verify(request):
 
         if form.is_valid():
             code = form.cleaned_data['code']
-
+            print(code)
             if otp:
                 if int(code) == int(cache_code['code']):
                     # cachedan formani oladi
                     form = cache.get(cache_key, version=1)
-
                     user_form = RegisterUserForm(form)
                     if user_form.is_valid():
                         user = user_form.save()
@@ -133,7 +149,7 @@ def otp(request):
 
     otp.resend
 
-    send_email.delay('tanknarziyev@gmail.com', str(otp))
+#    send_email.delay('tanknarziyev@gmail.com', str(otp))
 
     # sms sender
     # send_sms.delay(phone, str(otp))
